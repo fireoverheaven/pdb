@@ -35,15 +35,6 @@ func BoltCopy(inputdb string, outputdb string) {
 		os.Exit(3)
 	}
 
-	if _, err := os.Stat(outputdb); err == nil {
-		fmt.Fprintf(
-			flag.CommandLine.Output(),
-			"file '%s' exists, not overwriting\n",
-			outputdb)
-		flag.Usage()
-		os.Exit(3)
-	}
-
 	idb, err := bolt.Open(inputdb, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
