@@ -1,5 +1,4 @@
-
-package main
+package pdb
 
 import (
 	"flag"
@@ -37,10 +36,6 @@ func BoltCopy(inputdb string, outputdb string) {
 
 	flag.Parse()
 
-	if flag.NArg() < 2 {
-		flag.Usage()
-		os.Exit(3)
-	}
 
 	if _, err := os.Stat(inputdb); os.IsNotExist(err) {
 		fmt.Fprintf(
