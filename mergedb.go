@@ -3,42 +3,39 @@ package pdb
 import (
 	"log"
 
+	"github.com/boltdb/bolt"
 	"github.com/asdine/storm/v3"
 )
 
 func MergeDB(dbfn1 string, dbfn2 string) {
-	db1, err := storm.Open(dbfn1)
+	db1, err := bolt.Open(dbfn1, 0600, nil)
 	if err != nil {
 		log.Fatalf("Couldn't open storm db at '%s'", dbfn1)
 	}
 
-	db2, err := storm.Open(dbfn2)
+	db2, err := bolt.Open(dbfn2, 0600, nil)
 	if err != nil {
 		log.Fatalf("Couldn't open storm db at '%s'", dbfn2)
 	}
 
-  err = db1.Init(&FileMetadata{})
-  if err != nil {
-    log.Printf("Could not init db1")
-  }
-	db2.Init(&FileMetadata{})
-  if err != nil {
-    log.Printf("Could not init db2")
-  }
-
-	var md1 []FileMetadata
-  err = db1.All(&md1)
+  copyBucket(db1, db2, "FileMetadata")
   defer db1.Close()
-  if err != nil {
-    log.Printf("Could not get all from db1")
-  }
-	for x := range md1 {
-    log.Printf("Moving %d", &x)
-    err := db2.Save(&md1[x])
-    if err != nil {
-      log.Printf("Could not save '%s' to db", &md1[x])
-    }
-	}
-
   defer db2.Close()
+
+}
+
+
+func copyBucket(idb, odb *bolt.DB, bucket string) error {
+	return idb.View(func(itx *bolt.Tx) error {
+		ib := itx.Bucket([]byte(bucket))
+		return odb.Update(func(otx *bolt.Tx) error {
+			ob, err := otx.CreateBucketIfNotExists([]byte(bucket))
+			if err != nil {
+				return err
+			}
+			return ib.ForEach(func(k, v []byte) error {
+				return ob.Put(k, v)
+			})
+		})
+	})
 }
