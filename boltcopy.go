@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+  "github.com/fireoverheaven/pdb"
 	"github.com/boltdb/bolt"
 )
 
@@ -42,6 +43,7 @@ func BoltCopy(inputdb string, outputdb string) {
 	defer idb.Close()
 
   var buckets []string
+  append(FileMetadata, &buckets)
 	bucketList, err := genBucketCopyList(idb, buckets, *include)
 	if err != nil {
 		log.Fatal(err)
