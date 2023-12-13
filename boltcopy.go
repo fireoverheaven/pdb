@@ -22,18 +22,7 @@ func (b *bucketFlags) Set(bucket string) error {
 }
 
 func BoltCopy(inputdb string, outputdb string) {
-	flag.Usage = func() {
-		fmt.Fprintf(
-			flag.CommandLine.Output(),
-			"Usage:\n%s [flags] <intput.db> <output.db>\nFlags:\n",
-			os.Args[0])
-		flag.PrintDefaults()
-	}
-
-	var buckets bucketFlags
 	var include = flag.Bool("i", false, "include provided buckets (i.e. white list behavior)")
-	flag.Var(&buckets, "b", "name of bucket (can specify multiple)")
-
 	flag.Parse()
 
 
@@ -55,20 +44,13 @@ func BoltCopy(inputdb string, outputdb string) {
 		os.Exit(3)
 	}
 
-	if *include && len(buckets) < 1 {
-		fmt.Fprintf(
-			flag.CommandLine.Output(),
-			"include-only mode (i.e. white list) but no buckets provided\n")
-		flag.Usage()
-		os.Exit(3)
-	}
-
 	idb, err := bolt.Open(inputdb, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer idb.Close()
 
+  var buckets []string
 	bucketList, err := genBucketCopyList(idb, buckets, *include)
 	if err != nil {
 		log.Fatal(err)
