@@ -6,7 +6,7 @@ import (
 	"github.com/asdine/storm/v3"
 )
 
-func merge_db(dbfn1 string, dbfn2 string) {
+func MergeDB(dbfn1 string, dbfn2 string) {
 	db1, err := storm.Open(dbfn1)
 	if err != nil {
 		log.Fatalf("Couldn't open storm db at '%s'", dbfn1)

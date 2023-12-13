@@ -13,7 +13,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func scan_dir(dbfilename string, startdir string) {
+func ScanDir(dbfilename string, startdir string) {
 	db, err := storm.Open(dbfilename)
 	if err != nil {
 		log.Fatalf("Couldn't open storm db at '%s'", dbfilename)
