@@ -21,9 +21,18 @@ func MergeDB(dbfn1 string, dbfn2 string) {
 	db2.Init(&FileMetadata{})
 
 	var md1 []FileMetadata
-	db1.All(&md1)
+  err = db1.All(&md1)
+  defer db1.Close()
+  if err != nil {
+    log.Printf("Could not get all from db1")
+  }
 	for x := range md1 {
-		db2.Save(&x)
+    log.Printf("Moving %d", &x)
+    err := db2.Save(&md1[x])
+    if err != nil {
+      log.Printf("Could not save '%s' to db", &md1[x])
+    }
 	}
 
+  defer db2.Close()
 }
