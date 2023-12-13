@@ -17,8 +17,14 @@ func MergeDB(dbfn1 string, dbfn2 string) {
 		log.Fatalf("Couldn't open storm db at '%s'", dbfn2)
 	}
 
-	db1.Init(&FileMetadata{})
+  err = db1.Init(&FileMetadata{})
+  if err != nil {
+    log.Printf("Could not init db1")
+  }
 	db2.Init(&FileMetadata{})
+  if err != nil {
+    log.Printf("Could not init db2")
+  }
 
 	var md1 []FileMetadata
   err = db1.All(&md1)
