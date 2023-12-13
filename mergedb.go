@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/boltdb/bolt"
-	"github.com/asdine/storm/v3"
 )
 
 func MergeDB(dbfn1 string, dbfn2 string) {
