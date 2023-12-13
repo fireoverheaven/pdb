@@ -22,7 +22,7 @@ func (b *bucketFlags) Set(bucket string) error {
 	return nil
 }
 
-func main() {
+func BoltCopy(inputdb string, outputdb string) {
 	flag.Usage = func() {
 		fmt.Fprintf(
 			flag.CommandLine.Output(),
@@ -42,20 +42,20 @@ func main() {
 		os.Exit(3)
 	}
 
-	if _, err := os.Stat(flag.Arg(0)); os.IsNotExist(err) {
+	if _, err := os.Stat(inputdb); os.IsNotExist(err) {
 		fmt.Fprintf(
 			flag.CommandLine.Output(),
 			"file '%s' does not exist\n",
-			flag.Arg(0))
+			inputdb)
 		flag.Usage()
 		os.Exit(3)
 	}
 
-	if _, err := os.Stat(flag.Arg(1)); err == nil {
+	if _, err := os.Stat(outputdb); err == nil {
 		fmt.Fprintf(
 			flag.CommandLine.Output(),
 			"file '%s' exists, not overwriting\n",
-			flag.Arg(1))
+			outputdb)
 		flag.Usage()
 		os.Exit(3)
 	}
@@ -68,7 +68,7 @@ func main() {
 		os.Exit(3)
 	}
 
-	idb, err := bolt.Open(flag.Arg(0), 0600, nil)
+	idb, err := bolt.Open(inputdb, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -84,7 +84,7 @@ func main() {
 		os.Exit(4)
 	}
 
-	odb, err := bolt.Open(flag.Arg(1), 0600, nil)
+	odb, err := bolt.Open(outputdb, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
