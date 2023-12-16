@@ -1,4 +1,4 @@
-module github.com/fireoverheaven/porndb-pdb
+module github.com/fireoverheaven/pdb
 
 go 1.21.5
 
