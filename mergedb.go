@@ -9,17 +9,20 @@ import (
 func MergeDB(dbfn1 string, dbfn2 string) {
 	db1, err := bolt.Open(dbfn1, 0600, nil)
 	if err != nil {
-		log.Fatalf("Couldn't open storm db at '%s'", dbfn1)
+		log.Fatalf("Couldn't open boltdb at '%s'", dbfn1)
 	}
 
 	db2, err := bolt.Open(dbfn2, 0600, nil)
 	if err != nil {
-		log.Fatalf("Couldn't open storm db at '%s'", dbfn2)
+		log.Fatalf("Couldn't open boltdb at '%s'", dbfn2)
 	}
 
-  copyBucket(db1, db2, "FileMetadata")
-  defer db1.Close()
-  defer db2.Close()
+  err = copyBucket(db1, db2, "FileMetadata")
+  if err != nil {
+    log.Fatalf("Failed to copy bucket (%s)", err)
+  }
+  db1.Close()
+  db2.Close()
 
 }
 
