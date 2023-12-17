@@ -22,17 +22,17 @@ func InitDB(filename string) *storm.DB {
   return db
 }
 
-func ReindexDB(db *storm.DB) error {
-  log.Printf("Reindexing db")
+func ReIndexDB(db *storm.DB) error {
+  log.Printf("Reindexing %s", db)
   err := db.ReIndex(&FileMetadata{})
   if err != nil {
-    log.Fatalf("Couldn't reindex: %s", err)
+    return err
   }
 
   log.Printf("Committing db")
   err = db.Commit()
   if err != nil {
-    log.Fatalf("Couldn't commit: %s", err)
+    return err
   }
 
   return nil
