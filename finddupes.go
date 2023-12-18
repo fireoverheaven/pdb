@@ -39,13 +39,21 @@ func ReIndexDB(db *storm.DB) error {
 }
 
 func PrintBySize(db *storm.DB) {
-  var records []FileMetadata
-  err := db.Find("Host", "aleph.fireoh.com", &records)
+  var alephrecords []FileMetadata
+  var daisyrecords []FileMetadata
+  err := db.Find("Host", "aleph.fireoh.com", &alephrecords)
   if err != nil {
     log.Fatalf("Couldn't get all records by size: %s", err)
   }
-  for _, record := range records {
-    db.Find("Size", record.Size, &FileMetadata{})
-    log.Printf("%d %s", record.Size, record.Path)
+  err = db.Find("Host", "daisy.fireoh.com", &daisyrecords)
+  if err != nil {
+    log.Fatalf("Couldn't get all records by size: %s", err)
+  }
+  for _, record := range alephrecords {
+    for _, r2 := range daisyrecords {
+      if r2.Size == record.Size {
+        log.Printf("%d\n%s\n%s\n\n", record.Size, record.Path, r2.Path)
+      }
+    }
   }
 }
