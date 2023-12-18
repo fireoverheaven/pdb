@@ -40,11 +40,12 @@ func ReIndexDB(db *storm.DB) error {
 
 func PrintBySize(db *storm.DB) {
   var records []FileMetadata
-  err := db.AllByIndex("Size", &records)
+  err := db.Find("Host", "aleph.fireoh.com", &records)
   if err != nil {
     log.Fatalf("Couldn't get all records by size: %s", err)
   }
   for _, record := range records {
+    db.Find("Size", record.Size, &FileMetadata{})
     log.Printf("%d %s", record.Size, record.Path)
   }
 }
