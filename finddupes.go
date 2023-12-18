@@ -54,8 +54,8 @@ func PrintBySize(db *storm.DB) {
       continue
     }
     for _, r2 := range daisyrecords {
-      if r2.Size == record.Size {
-        log.Printf("%d\n%s\n%s\n\n", record.Size, record.Path, r2.Path)
+      if r2.Size == record.Size && r2.Filename == record.Filename {
+        log.Printf("%d", r2.Path)
       }
     }
   }
