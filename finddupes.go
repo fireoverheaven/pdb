@@ -50,6 +50,9 @@ func PrintBySize(db *storm.DB) {
     log.Fatalf("Couldn't get all records by size: %s", err)
   }
   for _, record := range alephrecords {
+    if record.Size < 1382740 {
+      continue
+    }
     for _, r2 := range daisyrecords {
       if r2.Size == record.Size {
         log.Printf("%d\n%s\n%s\n\n", record.Size, record.Path, r2.Path)
