@@ -2,6 +2,7 @@ package pdb
 
 import (
   "log"
+  "os"
   
   "github.com/asdine/storm/v3"
 )
@@ -49,14 +50,20 @@ func PrintBySize(db *storm.DB) {
   if err != nil {
     log.Fatalf("Couldn't get all records by size: %s", err)
   }
+  f, err := os.Create("/tmp/porndb.out")
+  if err != nil {
+    log.Fatalf("Couldn't create output file: %s", err)
+  }
+  defer f.Close()
   for _, record := range alephrecords {
     if record.Size < 1382740 {
       continue
     }
     for _, r2 := range daisyrecords {
       if r2.Size == record.Size && r2.Filename == record.Filename {
-        log.Printf("%d", r2.Path)
+        f.WriteString(r2.Path)
       }
     }
   }
+  f.Sync()
 }
